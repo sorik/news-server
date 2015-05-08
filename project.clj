@@ -9,6 +9,6 @@
                    [compojure "1.3.3"]
                    [ring/ring-core "1.3.2"]
                    [com.novemberain/monger "2.0.0"]
-                   [org.clojure/data.json "0.2.6"]]
+                   [cheshire "5.1.1"]]
 
-    :ring {:handler main/handler})
+    :ring {:handler main/handler :init main/init :destroy main/destroy})

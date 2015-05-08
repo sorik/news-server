@@ -1,13 +1,30 @@
 (ns news
     (:require [monger.core :as mg]
-              [monger.collection :as mc]))
+              [monger.collection :as mc]
+              [monger.json :as mj]))
 
 (def mongodb-url "mongodb://127.0.0.1/")
 (def db-name "words")
 (def news-collection "news")
 
-(defn insert [news]
+(def db (atom nil))
+(def conn (atom nil))
+
+(defn connect-to-db []
   (let [uri (str mongodb-url db-name)
-        {:keys [conn db]} (mg/connect-via-uri uri)]
-    (mc/insert db news-collection news)
-    (mg/disconnect conn)))
+        db-conn (mg/connect-via-uri uri)]
+    (reset! db (:db db-conn))
+    (reset! conn (:conn db-conn))))
+
+(defn disconnect []
+  (mg/disconnect @conn))
+
+(defn insert [news]
+    (mc/insert @db news-collection news))
+
+
+(defn fetch []
+  (let [news-list (map (fn [news]
+                         (update-in news [:_id] str))
+                       (mc/find-maps @db news-collection))]
+    news-list))
