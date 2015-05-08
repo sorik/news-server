@@ -9,14 +9,6 @@
     :handle-ok {:got true}
     :post! true)
 
-(defresource fetch-news []
-    :available-media-types ["application/json"]
-    )
-
-(defresource insert-news [news]
-    :available-media-type ["application/json"]
-    :post! (fn [_] (constantly true)))
-
 (defroutes app
     (ANY "/news" [data] (news data)))
 
