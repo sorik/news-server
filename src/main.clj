@@ -16,13 +16,17 @@
 
 (def db-interfaces
   {:insert news/insert
-   :fetch news/fetch})
+   :fetch news/fetch
+   :get-by-id news/get-by-id})
 
 (defn insert-news [f news]
   (f news))
 
 (defn fetch-news [f]
   (f))
+
+(defn get-news-by-id [f id]
+  (f id))
 
 (defresource news [data]
     :available-media-types ["application/json"]
@@ -42,7 +46,9 @@
   (ANY "/news/:id" [id] (resource
                        :allowed-methods [:get]
                        :available-media-types ["application/json"]
-                       :exists? (if-let [d (news/get-news-by-id id)] {::data d})
+                       :handle-exception (fn [e] (str (:exception e)))
+                       :exists? (fn [_] (if-let [d (get-news-by-id (:get-by-id db-interfaces) id)]
+                                  {::data d}))
                        :handle-ok ::data))
   (ANY "/news" [data] (news data)))
 

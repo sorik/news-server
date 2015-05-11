@@ -31,10 +31,5 @@
                        (mc/find-maps @db news-collection))]
     news-list))
 
-(defn get-news-by-id [id]
-  (let [object-id (try
-                    (ObjectId. id)
-                    (catch Exception e
-                      "invalid id"))]
-    (if (instance? ObjectId object-id)
-      (mc/find-one-as-map @db news-collection {:_id (ObjectId. id)}))))
+(defn get-by-id [id]
+  (mc/find-one-as-map @db news-collection {:_id (ObjectId. id)}))
