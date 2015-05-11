@@ -20,8 +20,9 @@
 (defn disconnect []
   (mg/disconnect @conn))
 
-(defn insert [news]
-    (mc/insert @db news-collection news))
+(def insert
+  (fn [news]
+    (mc/insert @db news-collection news)))
 
 
 (defn fetch []

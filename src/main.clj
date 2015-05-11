@@ -14,10 +14,13 @@
   (fn []
     (news/disconnect)))
 
+(defn insert-news [f news]
+  (f news))
 
 (defresource news [data]
     :available-media-types ["application/json"]
     :allowed-methods [:get :post]
+    :handle-exception (fn [e] (str (:exception e)))
     :handle-ok (fn [_]
                    (let [news-list (news/fetch)]
                      (generate-string news-list)))
@@ -26,7 +29,7 @@
              (dosync
               (let [body-str (slurp (get-in ctx [:request :body]))
                     body (parse-string body-str true)]
-                (news/insert body)))))
+                (insert-news news/insert body)))))
 
 (defroutes app
   (ANY "/news/:id" [id] (resource

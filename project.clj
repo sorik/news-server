@@ -11,4 +11,7 @@
                    [com.novemberain/monger "2.0.0"]
                    [cheshire "5.1.1"]]
 
-    :ring {:handler main/handler :init main/init :destroy main/destroy})
+    :ring {:handler main/handler :init main/init :destroy main/destroy}
+
+    :test-paths ["test/unit"]
+  )
