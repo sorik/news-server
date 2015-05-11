@@ -29,7 +29,12 @@
                 (news/insert body)))))
 
 (defroutes app
-    (ANY "/news" [data] (news data)))
+  (ANY "/news/:id" [id] (resource
+                       :allowed-methods [:get]
+                       :available-media-types ["application/json"]
+                       :exists? (if-let [d (news/get-news-by-id id)] {::data d})
+                       :handle-ok ::data))
+  (ANY "/news" [data] (news data)))
 
 (def handler
     (-> app

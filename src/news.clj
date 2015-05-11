@@ -1,7 +1,8 @@
 (ns news
-    (:require [monger.core :as mg]
-              [monger.collection :as mc]
-              [monger.json :as mj]))
+  (:require [monger.core :as mg]
+            [monger.collection :as mc]
+            [monger.json :as mj])
+  (:import org.bson.types.ObjectId))
 
 (def mongodb-url "mongodb://127.0.0.1/")
 (def db-name "words")
@@ -28,3 +29,11 @@
                          (update-in news [:_id] str))
                        (mc/find-maps @db news-collection))]
     news-list))
+
+(defn get-news-by-id [id]
+  (let [object-id (try
+                    (ObjectId. id)
+                    (catch Exception e
+                      "invalid id"))]
+    (if (instance? ObjectId object-id)
+      (mc/find-one-as-map @db news-collection {:_id (ObjectId. id)}))))
