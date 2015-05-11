@@ -1,6 +1,6 @@
-(ns main-test
+(ns news-handler-test
   (:use clojure.test)
-  (:require [main :refer :all]))
+  (:require [news-handler :refer :all :as nh]))
 
 (def mock-success-insert-function
   (fn [_]
@@ -29,29 +29,29 @@
   (testing  "when db process is successful without an exception"
     (testing  "should return db result"
       (is (= "success"
-             (main/insert-news mock-success-insert-function {:any "data"})))))
+             (nh/insert-news mock-success-insert-function {:any "data"})))))
 
   (testing "when db process throws an exception"
     (testing "should throw an exception"
       (is (thrown-with-msg? Exception #"failed"
-                            (main/insert-news mock-fail-insert-function {:any "data"}))))))
+                            (nh/insert-news mock-fail-insert-function {:any "data"}))))))
 
 (deftest fetch
   (testing "when db process is successful without an exception"
     (testing "should return db result"
       (is (= expected-fetch-result
-             (main/fetch-news mock-success-fetch-function)))))
+             (nh/fetch-news mock-success-fetch-function)))))
   (testing "when db process throws an exception"
     (testing "should throw an exception"
       (is (thrown-with-msg? Exception #"failed"
-                            (main/fetch-news mock-fail-fetch-function))))))
+                            (nh/fetch-news mock-fail-fetch-function))))))
 
 (deftest get-by-id
   (testing "when db process is successful without an exception"
     (testing "should return db result"
       (is (= expected-get-by-id-result
-             (main/get-news-by-id mock-success-get-by-id-function "anyId")))))
+             (nh/get-news-by-id mock-success-get-by-id-function "anyId")))))
   (testing "when the news id is not valid"
     (testing "should throw an exception"
       (is (thrown? Exception
-                   (main/get-news-by-id mock-fail-get-by-id-function "anyId"))))))
+                   (nh/get-news-by-id mock-fail-get-by-id-function "anyId"))))))
