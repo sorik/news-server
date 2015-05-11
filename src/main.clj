@@ -14,22 +14,29 @@
   (fn []
     (news/disconnect)))
 
+(def db-interfaces
+  {:insert news/insert
+   :fetch news/fetch})
+
 (defn insert-news [f news]
   (f news))
+
+(defn fetch-news [f]
+  (f))
 
 (defresource news [data]
     :available-media-types ["application/json"]
     :allowed-methods [:get :post]
     :handle-exception (fn [e] (str (:exception e)))
     :handle-ok (fn [_]
-                   (let [news-list (news/fetch)]
+                   (let [news-list (fetch-news (:fetch db-interfaces))]
                      (generate-string news-list)))
 
     :post! (fn [ctx]
              (dosync
               (let [body-str (slurp (get-in ctx [:request :body]))
                     body (parse-string body-str true)]
-                (insert-news news/insert body)))))
+                (insert-news (:insert db-interfaces) body)))))
 
 (defroutes app
   (ANY "/news/:id" [id] (resource
