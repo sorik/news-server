@@ -1,10 +1,12 @@
 (ns main
-    (:require [liberator.core :refer [resource defresource]]
-              [ring.middleware.params :refer [wrap-params]]
-              [compojure.core :refer [defroutes ANY]]
-              [cheshire.core :refer [generate-string parse-string]]
-              [news-handler :refer :all]
-              [news :refer :all]))
+  (:gen-class)
+  (:require [liberator.core :refer [resource defresource]]
+            [ring.middleware.params :refer [wrap-params]]
+            [compojure.core :refer [defroutes ANY]]
+            [cheshire.core :refer [generate-string parse-string]]
+            [news-handler :refer :all]
+            [news :refer :all]
+            [ring.adapter.jetty :as jetty]))
 
 (def init
   (fn []
@@ -52,3 +54,8 @@
 (def handler
     (-> app
         wrap-params))
+
+(defn -main []
+  (init)
+  (jetty/run-jetty handler {:port 3000})
+  (destroy))

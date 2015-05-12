@@ -10,9 +10,16 @@
                    [ring/ring-core "1.3.2"]
                    [com.novemberain/monger "2.0.0"]
                    [cheshire "5.1.1"]
-                   [ring/ring-mock "0.2.0"]]
-
-    :ring {:handler main/handler :init main/init :destroy main/destroy}
+                   [ring/ring-mock "0.2.0"]
+                   [ring/ring-jetty-adapter "1.2.1"]]
 
     :test-paths ["test/unit"]
+
+    :target-path "target/%s/"
+    :clean-targets [:target-path]
+
+    :uberjar-name "news-server-standalone.jar"
+
+    :main main
+    :aot :all
   )
