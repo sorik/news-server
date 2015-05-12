@@ -55,7 +55,7 @@
     (-> app
         wrap-params))
 
-(defn -main []
+(defn -main [port]
   (init)
-  (jetty/run-jetty handler {:port 3000})
+  (jetty/run-jetty handler {:port (Integer/parseInt port)})
   (destroy))
