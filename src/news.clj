@@ -5,7 +5,11 @@
             [monger.json :as mj])
   (:import org.bson.types.ObjectId))
 
-(def mongodb-url "mongodb://127.0.0.1/")
+(defn mongodb-url []
+  (if-let [env-addr (System/getenv "DB_PORT_27017_TCP_ADDR")]
+    (str "mongodb://" env-addr "/")
+    "mongodb://127.0.0.1/"))
+
 (def db-name "words")
 (def news-collection "news")
 
@@ -13,7 +17,7 @@
 (def conn (atom nil))
 
 (defn connect-to-db []
-  (let [uri (str mongodb-url db-name)
+  (let [uri (str (mongodb-url) db-name)
         db-conn (mg/connect-via-uri uri)]
     (reset! db (:db db-conn))
     (reset! conn (:conn db-conn))))
