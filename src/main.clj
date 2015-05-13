@@ -25,21 +25,13 @@
     :available-media-types ["application/json"]
     :allowed-methods [:get :post]
     :handle-exception (fn [e] (str (:exception e)))
-    :malformed? (fn [ctx]
-                  (when (= :post (get-in ctx [:request :request-method]))
-                    (let [body-str (slurp (get-in ctx [:request :body]))]
-                      (try
-                        (do
-                          {::body (parse-string body-str true)}
-                          false)
-                        (catch Exception e
-                          true)))))
     :handle-ok (fn [_]
                    (let [news-list (news-handler/fetch-news (:fetch db-interfaces))]
                      (generate-string news-list)))
 
     :post! (fn [ctx]
-             (news-handler/insert-news (:insert db-interfaces) ::body)))
+              (let [body (parse-string (slurp (get-in ctx [:request :body])) true)]
+                (news-handler/insert-news (:insert db-interfaces) body))))
 
 (defroutes app
   (ANY "/news/:id" [id] (resource
