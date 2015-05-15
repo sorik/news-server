@@ -23,9 +23,9 @@
 
 (defresource news [data]
     :available-media-types ["application/json"]
-    :allowed-methods [:get :post]
+    :allowed-methods [:get :post :options]
     :handle-exception (fn [e] (str (:exception e)))
-    :handle-ok (fn [_]
+    :handle-ok (fn [ctx]
                    (let [news-list (news-handler/fetch-news (:fetch db-interfaces))]
                      (generate-string news-list)))
 
@@ -33,7 +33,7 @@
               (let [body (parse-string (slurp (get-in ctx [:request :body])) true)]
                 (news-handler/insert-news (:insert db-interfaces) body))))
 
-(defroutes app
+(defroutes app-routes
   (ANY "/news/:id" [id] (resource
                        :allowed-methods [:get]
                        :available-media-types ["application/json"]
@@ -43,11 +43,23 @@
                        :handle-ok ::data))
   (ANY "/news" [data] (news data)))
 
+(defn wrap-header-allow-cross-origin [handler]
+  (fn [request]
+    (let [response (handler request)]
+      (-> response
+          (assoc-in [:headers "Access-Control-Allow-Origin"] "*")
+          (assoc-in [:headers "Access-Control-Allow-Methods"] "GET, POST, PUT")
+          (assoc-in [:headers "Access-Control-Allow-Headers"] "Origin, X-Requested-With, Content-Type, Accept")))))
+
 (def handler
-    (-> app
+    (-> app-routes
         wrap-params))
+
+(def app
+  (-> handler
+      wrap-header-allow-cross-origin))
 
 (defn -main [port]
   (init)
-  (jetty/run-jetty handler {:port (Integer/parseInt port)})
+  (jetty/run-jetty app {:port (Integer/parseInt port)})
   (destroy))
