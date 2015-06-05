@@ -31,7 +31,7 @@
           (is (= 405 (:status response)))))
       (testing "when request body is not json format"
         (let [response (app (request :post "/news" "malformed json"))]
-          (is (= 400 (:status response))))))))
+          (is (= 500 (:status response))))))))
 
 (deftest fetch-request
   (testing "should return news data"
