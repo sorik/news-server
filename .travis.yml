@@ -1,9 +1,11 @@
 language: clojure
 lein: lein2
 install:
+    - sudo apt-get upgrade
     - sudo apt-get -y install docker
+before_script:
     - sudo service docker start
-before_script: docker ps
+    - docker ps
 script: lein do clean, test
 notifications:
   email: false
