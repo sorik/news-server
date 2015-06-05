@@ -1,6 +1,9 @@
 sudo: false
 language: clojure
 lein: lein2
+install:
+    yum install docker
+    systemctl start docker
 before_script: docker ps
 script: lein do clean, test
 notifications:
