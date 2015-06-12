@@ -7,7 +7,7 @@ install:
     - uname -r
     - which wget
     - wget -qO- https://get.docker.com/ | sh
-    - docker ps
+    - sudo docker ps
 script: lein do clean, test
 notifications:
   email: false
