@@ -4,7 +4,7 @@ install:
     - sudo apt-get update
     - sudo apt-get -y install docker
 before_script:
-    - sudo service docker start
+    - /etc/init.d/docker start
     - docker ps
 script: lein do clean, test
 notifications:
