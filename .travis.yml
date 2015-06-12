@@ -4,7 +4,6 @@ install:
     - uname -r
     - sudo apt-get update
     - sudo apt-get install linux-image-generic-lts-trusty
-    - sudo reboot
     - uname -r
     - which wget
 script: lein do clean, test
