@@ -6,6 +6,8 @@ install:
     - sudo apt-get install linux-image-generic-lts-trusty
     - uname -r
     - which wget
+    - wget -qO- https://get.docker.com/
+    - docker ps
 script: lein do clean, test
 notifications:
   email: false
