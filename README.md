@@ -4,3 +4,7 @@ News Server for Words Webfront
 -- interacts with mongodb
 
 -- clojure compojure liberator ring
+
+How to run
+-- docker build -t server .
+-- docker run -p 8005:80 server
